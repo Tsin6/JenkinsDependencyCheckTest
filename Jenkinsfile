@@ -3,20 +3,18 @@ pipeline {
 	stages {
 		stage('Checkout SCM') {
 			steps {
-				git 'https://github.com/Tsin6/JenkinsDependencyCheckTest.git'
-			}
-            steps {
+				git 'https://github.com/Tsin6/JenkinsDependencyCheckTest.git',
                 git branch:'master', url: 'https://github.com/ScaleSec/vulnado.git'
-            }
+			}
+
 		}
 
 		stage('OWASP DependencyCheck') {
 			steps {
-				dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Default'
-			}
-            steps{
+				dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Default',
                 sh '/var/jenkins_home/apache-maven-3.6.3/bin/mvn --batch-mode -V -U -e clean verify -Dsurefire.useFile=false -Dmaven.test.failure.ignore'
-            }
+			}
+                
 		}
 
         stage ('Analysis') {
