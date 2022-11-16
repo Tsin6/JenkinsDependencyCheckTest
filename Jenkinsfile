@@ -5,6 +5,7 @@ pipeline {
 			steps {
 				git 'https://github.com/Tsin6/JenkinsDependencyCheckTest.git'
                 git branch:'master', url: 'https://github.com/ScaleSec/vulnado.git'
+				git branch:'master', url: 'https://github.com/OWASP/Vulnerable-Web-Application.git'
 			}
 
 		}
@@ -17,11 +18,23 @@ pipeline {
                 
 		}
 
+		stage('Code Quality Check via SonarQube') {
+			steps {
+				script {
+					def scannerHome = tool 'SonarQube';
+						withSonarQubeEnv('SonarQube') {
+						sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=."
+					}
+				}
+			}
+		}
+
         stage ('Analysis') {
             steps {
                 sh '/var/jenkins_home/apache-maven-3.6.3/bin/mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd findbugs:findbugs'
             }
-        }          
+        }
+
 	}	
 	post {
 		success {
