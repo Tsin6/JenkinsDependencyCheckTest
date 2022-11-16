@@ -4,6 +4,7 @@ pipeline {
 		stage('Checkout SCM') {
 			steps {
 				git 'https://github.com/Tsin6/JenkinsDependencyCheckTest'
+                git branch:'master', url: 'https://github.com/ScaleSec/vulnado.git'
 			}
 
 		}
