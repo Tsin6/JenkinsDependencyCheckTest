@@ -5,6 +5,7 @@ pipeline {
 			steps {
 				git 'https://github.com/Tsin6/JenkinsDependencyCheckTest'
                 git branch:'master', url: 'https://github.com/ScaleSec/vulnado.git'
+				git branch:'master', url: 'https://github.com/OWASP/Vulnerable-Web-Application.git'
 			}
 
 		}
@@ -28,7 +29,7 @@ pipeline {
 				script {
 				 def scannerHome = tool 'SonarQube';
 					withSonarQubeEnv('SonarQube') {
-					sh "scannerHome/bin/sonar-scanner -Dsonar.projectKey=3X01_testing -Dsonar.sources=."
+					sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=3X01_testing -Dsonar.sources=."
 					}
 				}
 			}
