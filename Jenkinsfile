@@ -21,7 +21,18 @@ pipeline {
             steps {
                 sh '/var/jenkins_home/apache-maven-3.6.3/bin/mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd findbugs:findbugs'
             }
-        }          
+        }
+
+		stage('Code Quality Check via SonarQube') {
+			steps {
+				script {
+				 def scannerHome = tool 'SonarQube';
+					withSonarQubeEnv('SonarQube') {
+					sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=."
+					}
+				}
+			}
+		}        
 	}	
 	post {
 		success {
@@ -34,6 +45,7 @@ pipeline {
             recordIssues enabledForFailure: true, tool: spotBugs(pattern:'**/target/findbugsXml.xml')
             recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
             recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+			recordIssues enabledForFailure: true, tool: sonarQube()
         }
 	}
 }
